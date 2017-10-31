@@ -30,4 +30,23 @@ void SocketManager::init() {
 	service.sin_family = AF_INET;
 	service.sin_addr.s_addr = inet_addr(ip);
 	service.sin_port = htons(port);
+
+
+    if (bind(ServerSocket, (SOCKADDR*) &service, sizeof(service)) == SOCKET_ERROR) {
+        cerr << "bind() failed." << endl;
+        closesocket(ServerSocket);
+        WSACleanup();
+        exit(3);
+    }
+
+    //----------------------
+    // Listen for incoming connection requests.
+    // on the created socket
+    if (listen(ServerSocket, 30) == SOCKET_ERROR) {
+        cerr << "Error listening on socket." << endl;
+        closesocket(ServerSocket);
+        WSACleanup();
+        exit(4);
+    }
+
 }
