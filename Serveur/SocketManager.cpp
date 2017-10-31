@@ -1,0 +1,33 @@
+#include "SocketManager.h"
+
+using namespace std;
+
+SocketManager::SocketManager() {
+	init();
+}
+
+SocketManager::~SocketManager() {
+}
+
+void SocketManager::init() {
+	int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (result != NO_ERROR) {
+		cerr << "Error at startup" << endl;
+		exit(1);
+	}
+	ServerSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (ServerSocket == INVALID_SOCKET) {
+		cerr << "Error at socket" << endl;
+		exit(2);
+	}
+	char* option = "1";
+	setsockopt(ServerSocket, SOL_SOCKET, SO_REUSEADDR, option, sizeof(option));
+	char host[15];
+	cout << "Entrez l'adresse IP du serveur" << endl;
+	gets_s(host);
+	thisHost = gethostbyname(host);
+	ip = inet_ntoa(*(struct in_addr*) *thisHost->h_addr_list);
+	service.sin_family = AF_INET;
+	service.sin_addr.s_addr = inet_addr(ip);
+	service.sin_port = htons(port);
+}
