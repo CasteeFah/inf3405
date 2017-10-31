@@ -10,14 +10,9 @@ User::~User()
 {
 }
 
-bool User::validateUser(User user)
+std::string User::getUsername()
 {
-	return ((userId == user.userId) && (password == user.password));
-}
-
-std::string User::getUserId()
-{
-	return userId;
+	return username;
 }
 
 std::string User::getPassword()

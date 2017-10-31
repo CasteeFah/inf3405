@@ -6,12 +6,11 @@ class User
 public:
 	User();
 	~User();
-	bool validateUser(User user);
-	std::string getUserId();
+	std::string getUsername();
 	std::string getPassword();
 
 private:
-	std::string userId;
+	std::string username;
 	std::string password;
 };
 
