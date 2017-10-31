@@ -13,6 +13,8 @@ public:
 	SocketManager();
 	~SocketManager();
 	void init();
+	SOCKET getServerSocket();
+
 private:
 	WSADATA wsaData;
 	SOCKET ServerSocket;

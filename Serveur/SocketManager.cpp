@@ -22,7 +22,7 @@ void SocketManager::init() {
 	}
 	char* option = "1";
 	setsockopt(ServerSocket, SOL_SOCKET, SO_REUSEADDR, option, sizeof(option));
-	char host[15];
+	char host[16];
 	cout << "Entrez l'adresse IP du serveur" << endl;
 	gets_s(host);
 	thisHost = gethostbyname(host);
@@ -48,5 +48,8 @@ void SocketManager::init() {
         WSACleanup();
         exit(4);
     }
+}
 
+SOCKET SocketManager::getServerSocket() {
+	return ServerSocket;
 }
