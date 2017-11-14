@@ -1,38 +1,49 @@
 #include <string>
 #include <iostream>
-#include <Winsock2.h>
+#include <winsock2.h>
 #include <strstream>
 #include "SocketManager.h"
 
 // link with Ws2_32.lib
 #pragma comment( lib, "ws2_32.lib" )
-
+extern DWORD WINAPI EchoHandler(void* sd_);
+// extern function :	look for username
+//						create user
+//						check pass
+//						emit last 5 message
+//						emit new message
 
 int main() {
 	SocketManager socketManager;
-	socketManager.init();
+	// UserManager
+	// MessageManager
+
+	socketManager.init(); 
 	while (true) {
 		sockaddr_in sinRemote;
 		int nAddrSize = sizeof(sinRemote);
 		SOCKET sd = accept(socketManager.getServerSocket(), (sockaddr*)&sinRemote, &nAddrSize);
 		if (sd != INVALID_SOCKET) {
+			std::cout << "socket connected" << std::endl;
+			char adr[INET_ADDRSTRLEN];
+			inet_ntop(AF_INET, &sinRemote.sin_addr, adr, INET_ADDRSTRLEN);
 			std::cout << "Connection acceptee De : " <<
-				inet_ntoa(sinRemote.sin_addr) << ":" <<
+				adr << ":" <<
 				ntohs(sinRemote.sin_port) << "." <<
 				std::endl;
-			//socketManager.add(&sd);
+			//socketManager.add(&sd); >> apres credential check
 			DWORD nThreadID;
 			CreateThread(0, 0, EchoHandler, (void*)sd, 0, &nThreadID);
 		}
 		else {
-			std::cerr << "erreur" <<
+			std::cout << "erreur" <<
 				std::endl;
-			    return 1;
 		}
 	}
 }
 
 DWORD WINAPI EchoHandler(void* sd) {
+
 	std::cout << "echo handled" << std::endl;
 	return 0;
 }

@@ -10,6 +10,13 @@
 #pragma comment(lib, "ws2_32.lib")
 
 
+//extern function : send message
+//					receive messages
+//					user + 
+//					pw >> new pw / current pw /new user/old user/ 
+//					validation msg
+
+
 int __cdecl main(int argc, char **argv)
 {
 	WSADATA wsaData;
@@ -50,7 +57,7 @@ int __cdecl main(int argc, char **argv)
 										//char *host = "L4708-XX.lerb.polymtl.ca";
 										//char *host = "add_IP locale";
 	char host[16];
-	char *port = "5030";
+	char *port = "10000";
 
 	//----------------------------
 	// Demander à l'usager l'adresse du serveur auquel il veut envoyer le message
@@ -84,14 +91,17 @@ int __cdecl main(int argc, char **argv)
 	sockaddr_in *adresse;
 	adresse = (struct sockaddr_in *) result->ai_addr;
 	//----------------------------------------------------
-	printf("Adresse trouvee pour le serveur %s : %s\n\n", host, inet_ntoa(adresse->sin_addr));
-	printf("Tentative de connexion au serveur %s avec le port %s\n\n", inet_ntoa(adresse->sin_addr), port);
+
+	char adr[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, &(adresse->sin_addr), adr, INET_ADDRSTRLEN);
+	printf("Adresse trouvee pour le serveur %s : %s\n\n", host, adr);
+	printf("Tentative de connexion au serveur %s avec le port %s\n\n", adr, port);
 
 	// On va se connecter au serveur en utilisant l'adresse qui se trouve dans
 	// la variable result.
 	iResult = connect(leSocket, result->ai_addr, (int)(result->ai_addrlen));
 	if (iResult == SOCKET_ERROR) {
-		printf("Impossible de se connecter au serveur %s sur le port %s\n\n", inet_ntoa(adresse->sin_addr), port);
+		printf("Impossible de se connecter au serveur %s sur le port %s\n\n", adr, port);
 		freeaddrinfo(result);
 		WSACleanup();
 		printf("Appuyez une touche pour finir\n");

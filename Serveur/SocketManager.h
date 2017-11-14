@@ -1,12 +1,17 @@
 #pragma once
-#include <WinSock2.h>
+
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #include <iostream>
 #include <algorithm>
 #include <strstream>
 #include <stdio.h>
 #include <vector>
 
-int port = 10000;
+
+
 
 class SocketManager
 {
@@ -22,6 +27,7 @@ private:
 	SOCKET ServerSocket;
 	hostent *thisHost;
 	char* ip;
+	int port = 10000;
 	sockaddr_in service;
 	std::vector<SOCKET*> sockets;
 };
