@@ -53,3 +53,7 @@ void SocketManager::init() {
 SOCKET SocketManager::getServerSocket() {
 	return ServerSocket;
 }
+
+void SocketManager::add(SOCKET* sd) {
+	sockets.push_back(sd);
+}

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <strstream>
 #include <stdio.h>
+#include <vector>
 
 int port = 10000;
 
@@ -14,6 +15,7 @@ public:
 	~SocketManager();
 	void init();
 	SOCKET getServerSocket();
+	void add(SOCKET* sd);
 
 private:
 	WSADATA wsaData;
@@ -21,4 +23,5 @@ private:
 	hostent *thisHost;
 	char* ip;
 	sockaddr_in service;
+	std::vector<SOCKET*> sockets;
 };
