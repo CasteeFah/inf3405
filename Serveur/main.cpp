@@ -16,16 +16,16 @@ extern DWORD WINAPI EchoHandler(void* sd_);
 //						emit new message
 
 int main() {
-	SocketManager socketManager;
-	// UserManager
-	// MessageManager
+	Ptr_SocketManager socketManager = SocketManager::getInstance();
+	Ptr_UserManager userManager = UserManager::getInstance();
+	Ptr_MessageManager messageManager = MessageManager::getInstance();
 
-	socketManager.init(); 
+	socketManager->init(); 
 	while (true) {
 		sockaddr_in sinRemote;
 		int nAddrSize = sizeof(sinRemote);
-		SOCKET sd = accept(socketManager.getServerSocket(), (sockaddr*)&sinRemote, &nAddrSize);
-		if (sd != INVALID_SOCKET) {
+		SOCKET socket = accept(socketManager->getServerSocket(), (sockaddr*)&sinRemote, &nAddrSize);
+		if (socket != INVALID_SOCKET) {
 			std::cout << "socket connected" << std::endl;
 			char adr[INET_ADDRSTRLEN];
 			inet_ntop(AF_INET, &sinRemote.sin_addr, adr, INET_ADDRSTRLEN);
@@ -35,7 +35,7 @@ int main() {
 				std::endl;
 			//socketManager.add(&sd); >> apres credential check
 			DWORD nThreadID;
-			CreateThread(0, 0, EchoHandler, (void*)sd, 0, &nThreadID);
+			//CreateThread(0, 0, EchoHandler, (void*)sd, 0, &nThreadID);
 		}
 		else {
 			std::cout << "erreur" <<
@@ -48,10 +48,37 @@ DWORD WINAPI EchoHandler(void* sd) {
 	std::cout << "echo handled" << std::endl;
 	return 0;
 }
-
-DWORD WINAPI socketHandle(void* sd, ) {
-	while (true) {
-		send((Socket*)sd, MessageManager::getRecentMessages(), );
-
+void receiveMessage(void* socket) {
+	while(true) {
+		char message[150]; // define max length
+		recv(*(SOCKET*)socket, message, 150, 0);
 	}
+}
+
+void authentication(void* socket) {
+	char* username;
+	char* password;
+	
+	send(*(SOCKET*)socket, "user", 4, 0);
+	recv(*(SOCKET*)socket, username, 10, 0);
+
+	if (true) {// user exist
+		send(*(SOCKET*)socket, "oldUser", 4, 0);
+		recv(*(SOCKET*)socket, password, 4, 0);
+		// validate
+		if wrong{
+			send(*(SOCKET*)socket, "badpw", 4, 0);
+		}
+	} 
+	else {
+		send(*(SOCKET*)socket, "newUser", 4, 0);
+		recv(*(SOCKET*)socket, password, 4, 0);
+		//save
+	}
+	send(*(SOCKET*)socket, "result", 4, 0);
+
+}
+
+DWORD WINAPI socketHandle(void* socket, ) {
+	
 }

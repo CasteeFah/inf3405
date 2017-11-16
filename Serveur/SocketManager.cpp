@@ -2,6 +2,13 @@
 
 using namespace std;
 
+Ptr_SocketManager SocketManager::getInstance() {
+	if (!thisInstance) {
+		thisInstance = std::make_shared<SocketManager>();
+	}
+	return thisInstance;
+}
+
 SocketManager::SocketManager() {}
 
 SocketManager::~SocketManager() {

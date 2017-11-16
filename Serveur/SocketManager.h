@@ -9,20 +9,20 @@
 #include <strstream>
 #include <stdio.h>
 #include <vector>
-
-
-
+#include <memory>
 
 class SocketManager
 {
 public:
-	SocketManager();
+	static Ptr_SocketManager getInstance();
 	~SocketManager();
 	void init();
 	SOCKET getServerSocket();
 	void add(SOCKET* sd);
 
 private:
+	SocketManager();
+	static Ptr_SocketManager thisInstance;
 	WSADATA wsaData;
 	SOCKET ServerSocket;
 	hostent *thisHost;
@@ -31,3 +31,5 @@ private:
 	sockaddr_in service;
 	std::vector<SOCKET*> sockets;
 };
+
+typedef std::shared_ptr<SocketManager> Ptr_SocketManager;
