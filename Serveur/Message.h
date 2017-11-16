@@ -3,12 +3,21 @@
 
 #include <string>
 #include <iostream>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/foreach.hpp>
 
 class Message {
 public:
+	Message();
     Message(std::string user, std::string adress, std::string time, std::string message);
 
     friend std::ostream & operator<<(std::ostream &os, Message message);
+
+	std::string getUser();
+	std::string getAddress();
+	std::string getTime();
+	std::string getMessage();
 
 private:
     std::string user_;
