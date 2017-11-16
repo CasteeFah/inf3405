@@ -3,6 +3,7 @@
 #include <winsock2.h>
 #include <strstream>
 #include "SocketManager.h"
+#include "MessageManager.h"
 
 // link with Ws2_32.lib
 #pragma comment( lib, "ws2_32.lib" )
@@ -10,7 +11,7 @@ extern DWORD WINAPI EchoHandler(void* sd_);
 // extern function :	look for username
 //						create user
 //						check pass
-//						emit last 5 message
+//						emit last 15 messages
 //						emit new message
 
 int main() {
@@ -46,4 +47,11 @@ DWORD WINAPI EchoHandler(void* sd) {
 
 	std::cout << "echo handled" << std::endl;
 	return 0;
+}
+
+DWORD WINAPI socketHandle(void* sd, ) {
+	while (true) {
+		send((Socket*)sd, MessageManager::getRecentMessages(), );
+
+	}
 }
