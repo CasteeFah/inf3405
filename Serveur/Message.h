@@ -14,12 +14,6 @@ public:
 
     friend std::ostream & operator<<(std::ostream &os, Message message);
 
-	std::string getUser();
-	std::string getAddress();
-	std::string getTime();
-	std::string getMessage();
-
-private:
     std::string user_;
     std::string address_;
     std::string time_;
