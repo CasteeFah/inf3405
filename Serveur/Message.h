@@ -6,15 +6,15 @@
 
 class Message {
 public:
-    Message(std::string user, std::string adress, std::string time, char message[200]);
+    Message(std::string user, std::string adress, std::string time, std::string message);
 
     friend std::ostream & operator<<(std::ostream &os, Message message);
 
 private:
     std::string user_;
-    std::string adress_;
+    std::string address_;
     std::string time_;
-    char message_[200];
+	std::string message_;
 };
 
 #endif /* end of include guard: MESSAGE_H */
