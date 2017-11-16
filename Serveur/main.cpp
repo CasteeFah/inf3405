@@ -3,6 +3,8 @@
 #include <winsock2.h>
 #include <strstream>
 #include "SocketManager.h"
+#include "UserManager.h"
+
 
 // link with Ws2_32.lib
 #pragma comment( lib, "ws2_32.lib" )
@@ -43,7 +45,6 @@ int main() {
 }
 
 DWORD WINAPI EchoHandler(void* sd) {
-
 	std::cout << "echo handled" << std::endl;
 	return 0;
 }

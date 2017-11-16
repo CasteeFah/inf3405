@@ -1,8 +1,14 @@
 #include "UserManager.h"
 
-UserManager::UserManager() {
+Ptr_UserManager UserManager::getInstance() {
+	if (!thisInstance) {
+		thisInstance = std::make_shared<UserManager>();
+	}
+	return thisInstance;
 }
 
+UserManager::UserManager() {
+}
 
 UserManager::~UserManager() {
 }
