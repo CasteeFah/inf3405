@@ -55,14 +55,15 @@ void receiveMessage(void* socket) {
 	}
 }
 
-void authentication(void* socket) {
+void authentication(void* socket, Ptr_UserManager userManager) {
 	char* username;
 	char* password;
+	int userId;
 	
 	send(*(SOCKET*)socket, "user", 4, 0);
 	recv(*(SOCKET*)socket, username, 10, 0);
-
-	if (true) {// user exist
+	userId = userManager->findUserId(username);
+	if (userId != -1) {// user exist
 		send(*(SOCKET*)socket, "oldUser", 4, 0);
 		recv(*(SOCKET*)socket, password, 4, 0);
 		// validate
