@@ -29,3 +29,4 @@ int UserManager::findUserId(std::string username) {
 void UserManager::addUser(User user) {
 	users.push_back(user);
 }
+

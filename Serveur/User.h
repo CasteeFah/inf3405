@@ -5,6 +5,7 @@ class User
 {
 public:
 	User();
+	User::User(std::string newUsername, std::string newPassword);
 	~User();
 	std::string getUsername();
 	std::string getPassword();

@@ -66,15 +66,18 @@ void authentication(void* socket, Ptr_UserManager userManager) {
 	if (userId != -1) {// user exist
 		send(*(SOCKET*)socket, "oldUser", 4, 0);
 		recv(*(SOCKET*)socket, password, 4, 0);
-		// validate
-		if wrong{
+		User user = userManager->getUser(userId);
+		std::string realPassword = user.getPassword();
+		if (password != realPassword) {
 			send(*(SOCKET*)socket, "badpw", 4, 0);
 		}
-	} 
+	}
 	else {
 		send(*(SOCKET*)socket, "newUser", 4, 0);
 		recv(*(SOCKET*)socket, password, 4, 0);
-		//save
+		//create new User
+		User* user = new User(username, password);
+		userManager->addUser(*user);
 	}
 	send(*(SOCKET*)socket, "result", 4, 0);
 

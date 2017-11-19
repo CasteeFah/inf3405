@@ -1,8 +1,15 @@
 #include "User.h"
+#include <string>
 
 
 User::User()
 {
+}
+
+User::User(std::string newUsername , std::string newPassword )
+{
+	username = newUsername;
+	password = newPassword;
 }
 
 
