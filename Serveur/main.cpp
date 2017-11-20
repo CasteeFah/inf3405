@@ -8,10 +8,15 @@
 #include "User.h"
 #include <ctime>
 
+struct ThreadData {
+    SOCKET socket_;
+    sockaddr_in addr_;
+    ThreadData(SOCKET socket, sockaddr_in addr) : socket_(socket), addr_(addr) {};
+};
 
 // link with Ws2_32.lib
 #pragma comment( lib, "ws2_32.lib" )
-extern DWORD WINAPI socketHandle(void* socket);
+extern DWORD WINAPI socketHandler(LPVOID threadData);
 // extern function :	look for username
 //						create user
 //						check pass
@@ -23,7 +28,7 @@ int main() {
 	Ptr_UserManager userManager = UserManager::getInstance();
 	Ptr_MessageManager messageManager = MessageManager::getInstance();
 
-	socketManager->init(); 
+	socketManager->init();
 	while (true) {
 		sockaddr_in sinRemote;
 		int nAddrSize = sizeof(sinRemote);
@@ -31,14 +36,15 @@ int main() {
 		if (socket != INVALID_SOCKET) {
 			std::cout << "socket connected" << std::endl;
 			char adr[INET_ADDRSTRLEN];
-			inet_ntop(AF_INET, &sinRemote.sin_addr, adr, INET_ADDRSTRLEN);
-			std::cout << "Connection acceptee De : " <<
+            inet_ntop(AF_INET, &sinRemote.sin_addr, adr, INET_ADDRSTRLEN);
+
+            std::cout << "Connection acceptee De : " <<
 				adr << ":" <<
 				ntohs(sinRemote.sin_port) << "." <<
 				std::endl;
-			//socketManager.add(&sd); >> apres credential check
+
 			DWORD nThreadID;
-			CreateThread(0, 0, socketHandle, (void*)socket, 0, &nThreadID);
+			CreateThread(0, 0, socketHandler, (new ThreadData(socket, sinRemote)), 0, &nThreadID);
 		}
 		else {
 			std::cout << "erreur" <<
@@ -47,18 +53,30 @@ int main() {
 	}
 }
 
-void receiveMessage(void* socket) {
+void receiveMessage(LPVOID threadData) {
+
+	ThreadData *data = (ThreadData*)threadData;
+
+	char adr[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, &(data->addr_.sin_addr), adr, INET_ADDRSTRLEN);
+	std::cout << adr << ":" << data->addr_.sin_port << std::endl;
+
 	while (true) {
 		char buffer[150]; // define max length
-		recv(*(SOCKET*)socket, buffer, 150, 0);
+		int status = recv(data->socket_, buffer, 150, 0);
+		if (status == SOCKET_ERROR) {
+			std::cout << "disconected" << std::endl;
+			return;
+		}
+		std::cout << buffer << std::endl;
 
 		time_t currentTime;
 		time(&currentTime);
-		struct tm* date = NULL;
-		localtime_s(date, &currentTime);
+		struct tm date;
+		localtime_s(&date, &currentTime);
 
-		std::cout << 1900 + date->tm_year << "-" << date->tm_mon + 1 << "-" << date->tm_mday << "@" << date->tm_hour << ":" << date->tm_min << ":" << date->tm_sec << std::endl;
 
+		std::cout << 1900 + date.tm_year << "-" << date.tm_mon + 1 << "-" << date.tm_mday << "@" << date.tm_hour << ":" << date.tm_min << ":" << date.tm_sec << std::endl;
 		//Message message(user.getUsername(), ,date, message);
 
 
@@ -66,15 +84,17 @@ void receiveMessage(void* socket) {
 	}
 }
 
-void authentication(void* socket) {
+/*
+void authentication(void* sd) {
+    SOCKET socket = (SOCKET)sd;
 	char* username = "";
 	char* password = "";
 	int userId = -1;
 	Ptr_UserManager userManager = UserManager::getInstance();
 	Ptr_MessageManager messageManager = MessageManager::getInstance();
-	
-	send(*(SOCKET*)socket, "user", 4, 0);
-	recv(*(SOCKET*)socket, username, 10, 0);
+
+	send(socket, "user", 4, 0);
+	recv(socket, username, 10, 0);
 	userId = userManager->findUserId(username);
 	if (userId != -1) {// user exist
 		send(*(SOCKET*)socket, "oldUser", 4, 0);
@@ -97,10 +117,11 @@ void authentication(void* socket) {
 	send(*(SOCKET*)socket, "messages", 4, 0);
 
 }
+*/
 
 
-DWORD WINAPI socketHandle(void* socket) {
-	authentication(socket);
-	receiveMessage(socket);
+DWORD WINAPI socketHandler(LPVOID threadData) {
+	//authentication(socket);
+	receiveMessage(threadData);
 	return 0;
 }
