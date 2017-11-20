@@ -11,17 +11,21 @@
 #include <vector>
 #include <memory>
 
+class SocketManager;
+typedef std::shared_ptr<SocketManager> Ptr_SocketManager;
+
+
 class SocketManager
 {
 public:
 	static Ptr_SocketManager getInstance();
+	SocketManager();
 	~SocketManager();
 	void init();
 	SOCKET getServerSocket();
 	void add(SOCKET* sd);
 
 private:
-	SocketManager();
 	static Ptr_SocketManager thisInstance;
 	WSADATA wsaData;
 	SOCKET ServerSocket;
@@ -31,5 +35,3 @@ private:
 	sockaddr_in service;
 	std::vector<SOCKET*> sockets;
 };
-
-typedef std::shared_ptr<SocketManager> Ptr_SocketManager;

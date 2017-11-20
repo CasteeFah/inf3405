@@ -16,24 +16,9 @@ Message::Message(std::string user, std::string adress, std::string time, std::st
 
 std::ostream & operator<<(std::ostream &os, Message message) {
     std::cout << "[" << message.user_ << " - " << message.address_ << " - " << message.time_ << "]: " << message.message_ << std::endl;
+	return os;
 }
 
-
-std::string Message::getUser() {
-	return user_;
-}
-
-std::string Message::getAddress() {
-	return address_;
-}
-
-std::string Message::getTime() {
-	return time_;
-}
-
-std::string Message::getMessage() {
-	return message_;
-}
 
 
 // format :

@@ -5,10 +5,13 @@
 #include "SocketManager.h"
 #include "MessageManager.h"
 #include "UserManager.h"
+#include "User.h"
+#include <ctime>
+
 
 // link with Ws2_32.lib
 #pragma comment( lib, "ws2_32.lib" )
-extern DWORD WINAPI EchoHandler(void* sd_);
+extern DWORD WINAPI socketHandle(void* socket);
 // extern function :	look for username
 //						create user
 //						check pass
@@ -35,7 +38,7 @@ int main() {
 				std::endl;
 			//socketManager.add(&sd); >> apres credential check
 			DWORD nThreadID;
-			//CreateThread(0, 0, EchoHandler, (void*)sd, 0, &nThreadID);
+			CreateThread(0, 0, socketHandle, (void*)socket, 0, &nThreadID);
 		}
 		else {
 			std::cout << "erreur" <<
@@ -44,21 +47,29 @@ int main() {
 	}
 }
 
-DWORD WINAPI EchoHandler(void* sd) {
-	std::cout << "echo handled" << std::endl;
-	return 0;
-}
 void receiveMessage(void* socket) {
-	while(true) {
-		char message[150]; // define max length
-		recv(*(SOCKET*)socket, message, 150, 0);
+	while (true) {
+		char buffer[150]; // define max length
+		recv(*(SOCKET*)socket, buffer, 150, 0);
+
+		time_t currentTime;
+		time(&currentTime);
+		struct tm* date = NULL;
+		localtime_s(date, &currentTime);
+
+		std::cout << 1900 + date->tm_year << "-" << date->tm_mon + 1 << "-" << date->tm_mday << "@" << date->tm_hour << ":" << date->tm_min << ":" << date->tm_sec << std::endl;
+
+		//Message message(user.getUsername(), ,date, message);
+
+
+		//send(*(SOCKET*)socket, message, 150, 0);
 	}
 }
 
 void authentication(void* socket) {
-	char* username;
-	char* password;
-	int userId;
+	char* username = "";
+	char* password = "";
+	int userId = -1;
 	Ptr_UserManager userManager = UserManager::getInstance();
 	Ptr_MessageManager messageManager = MessageManager::getInstance();
 	
@@ -91,6 +102,5 @@ void authentication(void* socket) {
 DWORD WINAPI socketHandle(void* socket) {
 	authentication(socket);
 	receiveMessage(socket);
-
+	return 0;
 }
-

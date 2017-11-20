@@ -30,3 +30,4 @@ void UserManager::addUser(User user) {
 	users.push_back(user);
 }
 
+std::shared_ptr<UserManager> UserManager::thisInstance = std::shared_ptr<UserManager>();

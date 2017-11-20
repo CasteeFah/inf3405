@@ -20,9 +20,13 @@ char* MessageManager::getRecentMessages(){
 		//serialize(messages[i])
 		//return 
 	}
+	return "aa";
 }
 
 void MessageManager::addMessage(Message newMessage){
 	messages[index] = newMessage;
 	index = ++index%NUMBER_MESSAGES;
 }
+
+
+std::shared_ptr<MessageManager> MessageManager::thisInstance = std::shared_ptr<MessageManager>();

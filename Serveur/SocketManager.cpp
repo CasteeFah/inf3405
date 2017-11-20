@@ -82,3 +82,5 @@ SOCKET SocketManager::getServerSocket() {
 void SocketManager::add(SOCKET* sd) {
 	sockets.push_back(sd);
 }
+
+std::shared_ptr<SocketManager> SocketManager::thisInstance = std::shared_ptr<SocketManager>();
