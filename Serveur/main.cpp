@@ -55,10 +55,11 @@ void receiveMessage(void* socket) {
 	}
 }
 
-void authentication(void* socket, Ptr_UserManager userManager) {
+void authentication(void* socket) {
 	char* username;
 	char* password;
 	int userId;
+	Ptr_UserManager userManager = UserManager::getInstance();
 	
 	send(*(SOCKET*)socket, "user", 4, 0);
 	recv(*(SOCKET*)socket, username, 10, 0);
@@ -66,6 +67,7 @@ void authentication(void* socket, Ptr_UserManager userManager) {
 	if (userId != -1) {// user exist
 		send(*(SOCKET*)socket, "oldUser", 4, 0);
 		recv(*(SOCKET*)socket, password, 4, 0);
+		// verify password
 		User user = userManager->getUser(userId);
 		std::string realPassword = user.getPassword();
 		if (password != realPassword) {
@@ -83,6 +85,6 @@ void authentication(void* socket, Ptr_UserManager userManager) {
 
 }
 
-DWORD WINAPI socketHandle(void* socket, ) {
+DWORD WINAPI socketHandle(void* socket) {
 	
 }
