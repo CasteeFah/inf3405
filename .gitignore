@@ -5,6 +5,7 @@
 *.dll
 *.exe
 *.o
+*.obj
 *.so
 *.vs
 
@@ -30,3 +31,4 @@
 
 
 packages/
+*/x64/
