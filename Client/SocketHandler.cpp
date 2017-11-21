@@ -16,6 +16,10 @@ SocketHandler::~SocketHandler()
 {
 }
 
+SOCKET* SocketHandler::getSocket() {
+	return &thisSocket;
+}
+
 void SocketHandler::connectToServer() {
 	WSADATA wsaData;
 	struct addrinfo *result = NULL,

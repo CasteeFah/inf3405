@@ -97,7 +97,6 @@ void receiveMessage(LPVOID threadData) {
 	}
 }
 
-/*
 void authentication(void* sd) {
     SOCKET socket = (SOCKET)sd;
 	char* username = "";
@@ -127,10 +126,9 @@ void authentication(void* sd) {
 		User* user = new User(username, password);
 		userManager->addUser(*user);
 	}
-	send(*(SOCKET*)socket, "messages", 4, 0);
+	//send(*(SOCKET*)socket, "messages", 4, 0);
 
 }
-*/
 
 
 DWORD WINAPI socketHandler(LPVOID threadData) {

@@ -17,8 +17,9 @@ public:
 	SocketHandler();
 	~SocketHandler();
 	void connectToServer();
-	SOCKET thisSocket;
+	SOCKET* getSocket();
 
 private: 
 	static Ptr_SocketHandler thisInstance;
+	SOCKET thisSocket;
 };
