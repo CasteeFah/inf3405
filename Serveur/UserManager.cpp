@@ -28,6 +28,23 @@ int UserManager::findUserId(std::string username) {
 
 void UserManager::addUser(User user) {
 	users.push_back(user);
+	serialize();
+}
+
+void UserManager::serialize() {
+	std::ofstream ofs("user_file");
+
+	{
+		boost::archive::text_oarchive oa(ofs);
+		oa << users;
+	}
+}
+
+void UserManager::deserialize() {
+	std::ifstream ifs("user_file");
+	boost::archive::text_iarchive ia(ifs);
+
+	ia >> users;
 }
 
 std::shared_ptr<UserManager> UserManager::thisInstance = std::shared_ptr<UserManager>();

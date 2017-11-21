@@ -15,6 +15,8 @@ public:
 	~MessageManager();
 	char* getRecentMessages();
 	void addMessage(Message newMessage);
+	void MessageManager::serialize();
+	void MessageManager::deserialize();
 
 private: 
 	static Ptr_MessageManager thisInstance;

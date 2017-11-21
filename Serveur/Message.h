@@ -6,6 +6,9 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/foreach.hpp>
+#include <fstream>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
 
 class Message {
 public:
@@ -19,6 +22,16 @@ public:
     std::string address_;
     std::string time_;
 	std::string message_;
+private: 
+	friend class boost::serialization::access;
+
+	template<class Archive>
+	void serialize(Archive & ar, const unsigned int version) {
+		ar & user_;
+		ar & address_;
+		ar & time_;
+		ar & message_;
+	}
 };
 
 #endif /* end of include guard: MESSAGE_H */

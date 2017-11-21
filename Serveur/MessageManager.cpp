@@ -28,5 +28,20 @@ void MessageManager::addMessage(Message newMessage){
 	index = ++index%NUMBER_MESSAGES;
 }
 
+void MessageManager::serialize() {
+	std::ofstream ofs("user_file");
+
+	{
+		boost::archive::text_oarchive oa(ofs);
+		oa << users;
+	}
+}
+
+void MessageManager::deserialize() {
+	std::ifstream ifs("user_file");
+	boost::archive::text_iarchive ia(ifs);
+
+	ia >> users;
+}
 
 std::shared_ptr<MessageManager> MessageManager::thisInstance = std::shared_ptr<MessageManager>();

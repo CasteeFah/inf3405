@@ -16,6 +16,9 @@ public:
 	User getUser(int userId);
 	int findUserId(std::string username);
 	void addUser(User user);
+	void UserManager::serialize();
+	void UserManager::deserialize();
+
 
 private:
 
