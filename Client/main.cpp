@@ -26,13 +26,11 @@ int __cdecl main(int argc, char **argv)
 {
 	Ptr_SocketHandler socketHandler = SocketHandler::getInstance();
 	socketHandler->connectToServer();
-
 	if (!authentication()) {
 		return -1;
 	}
-
 	DWORD nThreadID;
-	CreateThread(0, 0, receiveMessage, (void*) socketHandler->getSocket(), 0, &nThreadID);
+	CreateThread(0, 0, receiveMessage, NULL, 0, &nThreadID);
 	//bool status = true;
 
 	while (true) {
@@ -58,10 +56,10 @@ int __cdecl main(int argc, char **argv)
 }
 
 DWORD WINAPI receiveMessage(void* sd) {
-	SOCKET socket = (SOCKET)sd;
+	SOCKET* socket = SocketHandler::getInstance()->getSocket();
 	while (true) {
 		char buffer[MESSAGE_LENGTH];
-		int status = recv(socket, buffer, MESSAGE_LENGTH, 0);
+		int status = recv(*socket, buffer, MESSAGE_LENGTH, 0);
 		if (status == SOCKET_ERROR) {
 			return 0;
 		}

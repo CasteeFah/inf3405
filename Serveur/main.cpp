@@ -19,6 +19,8 @@ struct ThreadData {
 // link with Ws2_32.lib
 #pragma comment( lib, "ws2_32.lib" )
 extern DWORD WINAPI socketHandler(LPVOID threadData);
+int authentication(LPVOID threadData);
+
 // extern function :	look for username
 //						create user
 //						check pass
@@ -61,6 +63,14 @@ void receiveMessage(LPVOID threadData) {
 	Ptr_SocketManager socketManager = SocketManager::getInstance();
 	ThreadData *data = (ThreadData*)threadData;
 
+	int validUser = 0;
+	validUser = authentication(threadData);
+
+	//while (validUser == 0) {}
+
+	//if (validUser == -1) {
+	//	return;
+	//}
 	socketManager->add(&(data->socket_));
 
 	char adr[INET_ADDRSTRLEN];
@@ -98,26 +108,36 @@ void receiveMessage(LPVOID threadData) {
 }
 
 
-void authentication(LPVOID threadData) {
+int authentication(LPVOID threadData) {
 	ThreadData *data = (ThreadData*)threadData;
-	char* username = "";
-	char* password = "";
+	char username[20];
+	char password[20];
 	int userId = -1;
 	Ptr_UserManager userManager = UserManager::getInstance();
 	Ptr_MessageManager messageManager = MessageManager::getInstance();
 
 	send(data->socket_, "user", 10, 0);
-	recv(data->socket_, username, 20, 0);
+	int status = recv(data->socket_, username, 20, 0);
+	if (status == SOCKET_ERROR) {
+		std::cout << "disconected" << std::endl;
+		int info = WSAGetLastError();
+		exit(info);
+	}
 	userId = userManager->findUserId(username);
 	if (userId != -1) {// user exist
 		send(data->socket_, "oldUser", 10, 0);
-		recv(data->socket_, password, 20, 0);
+		status = recv(data->socket_, password, 20, 0);
+		if (status == SOCKET_ERROR) {
+			std::cout << "disconected" << std::endl;
+			int info = WSAGetLastError();
+			exit(info);
+		}
 		// verify password
 		User user = userManager->getUser(userId);
 		std::string realPassword = user.getPassword();
 		if (password != realPassword) {
 			send(data->socket_, "badpw", 10, 0);
-			//exit(1);
+			return -1;
 		}
 		else {
 			send(data->socket_, "ok", 10, 0);
@@ -125,20 +145,24 @@ void authentication(LPVOID threadData) {
 	}
 	else {
 		send(data->socket_, "newUser", 10, 0);
-		recv(data->socket_, password, 4, 0);
+		status = recv(data->socket_, password, 4, 0);
+		if (status == SOCKET_ERROR) {
+			std::cout << "disconected" << std::endl;
+			int info = WSAGetLastError();
+			exit(info);
+		}
 		//create new User
 		User user = User(username, password);
 		userManager->addUser(user);
 		send(data->socket_, "ok", 10, 0);
 	}
 	send(data->socket_, "messages", 10, 0);
-
+	return 1;
 }
 
 
 
 DWORD WINAPI socketHandler(LPVOID threadData) {
-	authentication(threadData);
 	receiveMessage(threadData);
 	return 0;
 }
