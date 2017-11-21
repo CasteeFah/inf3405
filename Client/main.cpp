@@ -30,8 +30,7 @@ int __cdecl main(int argc, char **argv)
 		return -1;
 	}
 	DWORD nThreadID;
-	CreateThread(0, 0, receiveMessage, NULL, 0, &nThreadID);
-	//bool status = true;
+	CreateThread(0, 0, receiveMessage, 0, 0, &nThreadID);
 
 	while (true) {
 		char message[150];
@@ -47,7 +46,7 @@ int __cdecl main(int argc, char **argv)
 			WSACleanup();
 			printf("Appuyez une touche pour finir\n");
 			getchar();
-			exit(1);
+			return 1;
 		}
 	}
 
@@ -96,9 +95,17 @@ DWORD WINAPI authentication() {
 	if (status == SOCKET_ERROR) {
 		return 0;
 	}
-	if (buffer == "badpw") {
-		std::cout << std::endl << "Le mot de passe entré est invalide";
+	if ((std::string)buffer == "badpw") {
+		std::cout << std::endl << "Le mot de passe entré est invalide" << std::endl;
+		system("pause");
 		return 0;
 	}
+	std::cout << buffer << std::endl;
+	char messages[500]; //TODO redefine
+	status = recv(*socket, messages, 10, 0);
+	if (status == SOCKET_ERROR) {
+		return 0;
+	}
+	std::cout << messages << std::endl;
 	return 1;
 }
