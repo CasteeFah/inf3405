@@ -1,10 +1,5 @@
 #include "SocketHandler.h"
-#include <string>
-#include <iostream>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <stdlib.h>
-#include <stdio.h>
+
 
 Ptr_SocketHandler SocketHandler::getInstance() {
 	if (!thisInstance) {
@@ -23,7 +18,6 @@ SocketHandler::~SocketHandler()
 
 void SocketHandler::connectToServer() {
 	WSADATA wsaData;
-	SOCKET leSocket;// = INVALID_SOCKET;
 	struct addrinfo *result = NULL,
 		*ptr = NULL,
 		hints;
@@ -39,8 +33,8 @@ void SocketHandler::connectToServer() {
 		exit(1);
 	}
 	// On va creer le socket pour communiquer avec le serveur
-	leSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (leSocket == INVALID_SOCKET) {
+	thisSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (thisSocket == INVALID_SOCKET) {
 		printf("Erreur de socket(): %ld\n\n", WSAGetLastError());
 		freeaddrinfo(result);
 		WSACleanup();
@@ -102,7 +96,7 @@ void SocketHandler::connectToServer() {
 
 	// On va se connecter au serveur en utilisant l'adresse qui se trouve dans
 	// la variable result.
-	iResult = connect(leSocket, result->ai_addr, (int)(result->ai_addrlen));
+	iResult = connect(thisSocket, result->ai_addr, (int)(result->ai_addrlen));
 	if (iResult == SOCKET_ERROR) {
 		printf("Impossible de se connecter au serveur %s sur le port %s\n\n", adr, port);
 		freeaddrinfo(result);
@@ -115,6 +109,8 @@ void SocketHandler::connectToServer() {
 	printf("Connecte au serveur %s:%s\n\n", host, port);
 	freeaddrinfo(result);
 
+
+	/*
 	//----------------------------
 	// Demander à l'usager un mot a envoyer au serveur
 	printf("Saisir un mot de 7 lettres pour envoyer au serveur: ");
@@ -152,6 +148,7 @@ void SocketHandler::connectToServer() {
 
 	printf("Appuyez une touche pour finir\n");
 	getchar();
+	*/
 }
 
 std::shared_ptr<SocketHandler> SocketHandler::thisInstance = std::shared_ptr<SocketHandler>();

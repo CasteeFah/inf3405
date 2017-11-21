@@ -10,8 +10,9 @@
 class Message {
 public:
 	Message();
-    Message(std::string user, std::string adress, std::string time, std::string message);
-
+    Message(std::string user, std::string adress, std::string port, tm time, std::string message);
+	std::string timeToString(tm date);
+	std::string messageToString();
     friend std::ostream & operator<<(std::ostream &os, Message message);
 
     std::string user_;

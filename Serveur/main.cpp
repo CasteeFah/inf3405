@@ -8,6 +8,8 @@
 #include "User.h"
 #include <ctime>
 
+const int MESSAGE_LENGTH = 500;
+
 struct ThreadData {
     SOCKET socket_;
     sockaddr_in addr_;
@@ -43,6 +45,8 @@ int main() {
 				ntohs(sinRemote.sin_port) << "." <<
 				std::endl;
 
+
+
 			DWORD nThreadID;
 			CreateThread(0, 0, socketHandler, (new ThreadData(socket, sinRemote)), 0, &nThreadID);
 		}
@@ -54,16 +58,21 @@ int main() {
 }
 
 void receiveMessage(LPVOID threadData) {
-
+	Ptr_SocketManager socketManager = SocketManager::getInstance();
 	ThreadData *data = (ThreadData*)threadData;
+
+	socketManager->add(&(data->socket_));
 
 	char adr[INET_ADDRSTRLEN];
 	inet_ntop(AF_INET, &(data->addr_.sin_addr), adr, INET_ADDRSTRLEN);
 	std::cout << adr << ":" << data->addr_.sin_port << std::endl;
 
+	std::string ip = adr;
+	std::string port = std::to_string(data->addr_.sin_port);
+
 	while (true) {
-		char buffer[150]; // define max length
-		int status = recv(data->socket_, buffer, 150, 0);
+		char buffer[MESSAGE_LENGTH]; // define max length
+		int status = recv(data->socket_, buffer, MESSAGE_LENGTH, 0);
 		if (status == SOCKET_ERROR) {
 			std::cout << "disconected" << std::endl;
 			return;
@@ -72,14 +81,18 @@ void receiveMessage(LPVOID threadData) {
 
 		time_t currentTime;
 		time(&currentTime);
-		struct tm date;
+		tm date;
 		localtime_s(&date, &currentTime);
 
+		//std::cout << 1900 + date.tm_year << "-" << date.tm_mon + 1 << "-" << date.tm_mday << "@" << date.tm_hour << ":" << date.tm_min << ":" << date.tm_sec << std::endl;
+		Message message("username", ip, port, date, buffer);
 
-		std::cout << 1900 + date.tm_year << "-" << date.tm_mon + 1 << "-" << date.tm_mday << "@" << date.tm_hour << ":" << date.tm_min << ":" << date.tm_sec << std::endl;
-		//Message message(user.getUsername(), ,date, message);
+		std::cout << message;
 
+		std::string messageString = message.messageToString();
+		char * emitBuffer = &messageString[0u];
 
+		socketManager->broadcast(emitBuffer);
 		//send(*(SOCKET*)socket, message, 150, 0);
 	}
 }
@@ -125,3 +138,4 @@ DWORD WINAPI socketHandler(LPVOID threadData) {
 	receiveMessage(threadData);
 	return 0;
 }
+

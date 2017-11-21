@@ -19,6 +19,7 @@ class SocketManager
 {
 public:
 	static Ptr_SocketManager getInstance();
+	void broadcast(char* message);
 	SocketManager();
 	~SocketManager();
 	void init();
