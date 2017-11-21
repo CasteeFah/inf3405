@@ -97,44 +97,48 @@ void receiveMessage(LPVOID threadData) {
 	}
 }
 
-/*
-void authentication(void* sd) {
-    SOCKET socket = (SOCKET)sd;
+
+void authentication(LPVOID threadData) {
+	ThreadData *data = (ThreadData*)threadData;
 	char* username = "";
 	char* password = "";
 	int userId = -1;
 	Ptr_UserManager userManager = UserManager::getInstance();
 	Ptr_MessageManager messageManager = MessageManager::getInstance();
 
-	send(socket, "user", 4, 0);
-	recv(socket, username, 10, 0);
+	send(data->socket_, "user", 10, 0);
+	recv(data->socket_, username, 20, 0);
 	userId = userManager->findUserId(username);
 	if (userId != -1) {// user exist
-		send(*(SOCKET*)socket, "oldUser", 4, 0);
-		recv(*(SOCKET*)socket, password, 4, 0);
+		send(data->socket_, "oldUser", 10, 0);
+		recv(data->socket_, password, 20, 0);
 		// verify password
 		User user = userManager->getUser(userId);
 		std::string realPassword = user.getPassword();
 		if (password != realPassword) {
-			send(*(SOCKET*)socket, "badpw", 4, 0);
+			send(data->socket_, "badpw", 10, 0);
 			//exit(1);
+		}
+		else {
+			send(data->socket_, "ok", 10, 0);
 		}
 	}
 	else {
-		send(*(SOCKET*)socket, "newUser", 4, 0);
-		recv(*(SOCKET*)socket, password, 4, 0);
+		send(data->socket_, "newUser", 10, 0);
+		recv(data->socket_, password, 4, 0);
 		//create new User
-		User* user = new User(username, password);
-		userManager->addUser(*user);
+		User user = User(username, password);
+		userManager->addUser(user);
+		send(data->socket_, "ok", 10, 0);
 	}
-	send(*(SOCKET*)socket, "messages", 4, 0);
+	send(data->socket_, "messages", 10, 0);
 
 }
-*/
+
 
 
 DWORD WINAPI socketHandler(LPVOID threadData) {
-	//authentication(socket);
+	authentication(threadData);
 	receiveMessage(threadData);
 	return 0;
 }
