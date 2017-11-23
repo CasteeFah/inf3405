@@ -145,7 +145,7 @@ int authentication(LPVOID threadData) {
 	}
 	else {
 		send(data->socket_, "newUser", 10, 0);
-		status = recv(data->socket_, password, 4, 0);
+		status = recv(data->socket_, password, 20, 0);
 		if (status == SOCKET_ERROR) {
 			std::cout << "disconected" << std::endl;
 			int info = WSAGetLastError();

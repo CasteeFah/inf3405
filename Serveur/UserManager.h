@@ -3,6 +3,9 @@
 #include "User.h"
 #include <vector>
 #include <memory>
+#include <boost\archive\text_iarchive.hpp>
+#include <boost\archive\text_oarchive.hpp>
+#include <boost\serialization\vector.hpp>
 
 class UserManager;
 typedef std::shared_ptr<UserManager> Ptr_UserManager;

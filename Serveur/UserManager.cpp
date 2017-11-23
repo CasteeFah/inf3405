@@ -8,6 +8,7 @@ Ptr_UserManager UserManager::getInstance() {
 }
 
 UserManager::UserManager() {
+	deserialize();
 }
 
 UserManager::~UserManager() {
@@ -42,6 +43,9 @@ void UserManager::serialize() {
 
 void UserManager::deserialize() {
 	std::ifstream ifs("user_file");
+	if (!ifs) {
+		return;
+	}
 	boost::archive::text_iarchive ia(ifs);
 
 	ia >> users;

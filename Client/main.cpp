@@ -76,7 +76,7 @@ DWORD WINAPI authentication() {
 	std::cout << buffer;
 	char username[20];
 	char password[20];
-	std::cout << std::endl << "Veuillez entrer votre nom d'utilisateur: ";
+	std::cout << std::endl << "Veuillez entrer votre nom d'utilisateur(longueur max: 20 caractères): ";
 	gets_s(username);
 	send(*socket, username, 20, 0);
 	status = recv(*socket, buffer, 10, 0);
@@ -87,7 +87,7 @@ DWORD WINAPI authentication() {
 		std::cout << std::endl << "Entrez votre mot de passe: ";
 	}
 	else {
-		std::cout << std::endl << "Entrez un mot de passe pour votre nouveau compte: ";
+		std::cout << std::endl << "Entrez un mot de passe pour votre nouveau compte((longueur max: 20 caractères): ";
 	}
 	gets_s(password);
 	send(*socket, password, 20, 0);
