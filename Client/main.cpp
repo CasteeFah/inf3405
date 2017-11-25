@@ -69,6 +69,8 @@ DWORD WINAPI receiveMessage(void* sd) {
 DWORD WINAPI authentication() {
 	SOCKET* socket = SocketHandler::getInstance()->getSocket();
 	char buffer[10];
+	char messages[4000]; //TODO redefine
+
 	int status = recv(*socket, buffer, 10, 0);
 	if (status == SOCKET_ERROR) {
 		return 0;
@@ -83,7 +85,7 @@ DWORD WINAPI authentication() {
 	if (status == SOCKET_ERROR) {
 		return 0;
 	}
-	if (buffer == "oldUser") {
+	if ((std::string) buffer == "oldUser") {
 		std::cout << std::endl << "Entrez votre mot de passe: ";
 	}
 	else {
@@ -100,9 +102,8 @@ DWORD WINAPI authentication() {
 		system("pause");
 		return 0;
 	}
-	std::cout << buffer << std::endl;
-	char messages[500]; //TODO redefine
-	status = recv(*socket, messages, 10, 0);
+	//std::cout << buffer << std::endl;
+	status = recv(*socket, messages, 4000, 0);
 	if (status == SOCKET_ERROR) {
 		return 0;
 	}

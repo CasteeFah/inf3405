@@ -8,40 +8,48 @@ Ptr_MessageManager MessageManager::getInstance(){
 }
 
 MessageManager::MessageManager() {
-	index = 0;
+	deserialize();
 }
 
 MessageManager::~MessageManager(){
 }
 
-char* MessageManager::getRecentMessages(){
-	for (size_t i = 0; i < NUMBER_MESSAGES; i++) 
-	{
-		//serialize(messages[i])
-		//return 
+std::string MessageManager::getRecentMessages(){
+	size_t i = 0;
+	std::string messagesTmp = "";
+	if (!(messages.size() < NUMBER_MESSAGES)) {
+		i = messages.size() - NUMBER_MESSAGES;
 	}
-	return "aa";
+
+	for (i; i < messages.size(); i++)
+	{
+		messagesTmp += messages[i].messageToString() + "\n";
+	}
+	return messagesTmp;
 }
 
 void MessageManager::addMessage(Message newMessage){
-	messages[index] = newMessage;
-	index = ++index%NUMBER_MESSAGES;
+	messages.push_back(newMessage);
+	serialize();
 }
 
-/*void MessageManager::serialize() {
-	std::ofstream ofs("user_file");
+void MessageManager::serialize() {
+	std::ofstream ofs("message_file");
 
 	{
 		boost::archive::text_oarchive oa(ofs);
-		oa << users;
+		oa << messages;
 	}
 }
 
 void MessageManager::deserialize() {
-	std::ifstream ifs("user_file");
+	std::ifstream ifs("message_file");
+	if (!ifs) {
+		return;
+	}
 	boost::archive::text_iarchive ia(ifs);
 
-	ia >> users;
-}*/
+	ia >> messages;
+} 
 
 std::shared_ptr<MessageManager> MessageManager::thisInstance = std::shared_ptr<MessageManager>();

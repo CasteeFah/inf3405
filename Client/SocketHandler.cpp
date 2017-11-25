@@ -25,8 +25,6 @@ void SocketHandler::connectToServer() {
 	struct addrinfo *result = NULL,
 		*ptr = NULL,
 		hints;
-	char motEnvoye[10];
-	char motRecu[10];
 	int iResult;
 
 	//--------------------------------------------
@@ -53,17 +51,39 @@ void SocketHandler::connectToServer() {
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;  // Protocole utilisé par le serveur
 
-									  // On indique le nom et le port du serveur auquel on veut se connecter
-									  //char *host = "L4708-XX";
-									  //char *host = "L4708-XX.lerb.polymtl.ca";
-									  //char *host = "add_IP locale";
+
 	char host[16];
-	char *port = "10000";
+	char port[6];
 
 	//----------------------------
 	// Demander à l'usager l'adresse du serveur auquel il veut envoyer le message
 	printf("Saisir l'adresse IP du serveur: ");
 	gets_s(host);
+
+	//check
+	in_addr temp;
+	if (inet_pton(AF_INET, host, &temp) <= 0) {
+		printf("Adresse IP invalide.\n");
+		system("pause");
+	}
+
+	printf("Saisir le port du serveur: ");
+	gets_s(port);
+	int n = 0;
+	while (port[n] != NULL) {
+		if (isalpha(port[n])) {
+			printf("Port invalide.\n");
+			system("pause");
+			exit(5);
+		}
+		n++;
+	}
+	int port_int = atoi(port);
+	if (!(port_int >= 5000 && port_int <= 5050)) {
+		printf("Port invalide.\n");
+		system("pause");
+		exit(4);
+	}
 
 	// getaddrinfo obtient l'adresse IP du host donné
 	iResult = getaddrinfo(host, port, &hints, &result);
@@ -113,46 +133,6 @@ void SocketHandler::connectToServer() {
 	printf("Connecte au serveur %s:%s\n\n", host, port);
 	freeaddrinfo(result);
 
-
-	/*
-	//----------------------------
-	// Demander à l'usager un mot a envoyer au serveur
-	printf("Saisir un mot de 7 lettres pour envoyer au serveur: ");
-	gets_s(motEnvoye);
-
-	//-----------------------------
-	// Envoyer le mot au serveur
-	iResult = send(leSocket, motEnvoye, 7, 0);
-	if (iResult == SOCKET_ERROR) {
-		printf("Erreur du send: %d\n", WSAGetLastError());
-		closesocket(leSocket);
-		WSACleanup();
-		printf("Appuyez une touche pour finir\n");
-		getchar();
-		exit(1);
-	}
-
-	printf("Nombre d'octets envoyes : %ld\n", iResult);
-
-	//------------------------------
-	// Maintenant, on va recevoir l' information envoyée par le serveur
-	iResult = recv(leSocket, motRecu, 7, 0);
-	if (iResult > 0) {
-		printf("Nombre d'octets recus: %d\n", iResult);
-		motRecu[iResult] = '\0';
-		printf("Le mot recu est %*s\n", iResult, motRecu);
-	}
-	else {
-		printf("Erreur de reception : %d\n", WSAGetLastError());
-	}
-
-	// cleanup
-	closesocket(leSocket);
-	WSACleanup();
-
-	printf("Appuyez une touche pour finir\n");
-	getchar();
-	*/
 }
 
 std::shared_ptr<SocketHandler> SocketHandler::thisInstance = std::shared_ptr<SocketHandler>();

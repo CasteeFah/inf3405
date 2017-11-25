@@ -13,7 +13,10 @@ const int MESSAGE_LENGTH = 500;
 struct ThreadData {
     SOCKET socket_;
     sockaddr_in addr_;
-    ThreadData(SOCKET socket, sockaddr_in addr) : socket_(socket), addr_(addr) {};
+	User user_;
+    ThreadData(SOCKET socket, sockaddr_in addr) : socket_(socket), addr_(addr) {
+		user_ = User();
+	};
 };
 
 // link with Ws2_32.lib
@@ -61,6 +64,7 @@ int main() {
 
 void receiveMessage(LPVOID threadData) {
 	Ptr_SocketManager socketManager = SocketManager::getInstance();
+	Ptr_MessageManager messageManager = MessageManager::getInstance();
 	ThreadData *data = (ThreadData*)threadData;
 
 	int validUser = 0;
@@ -95,15 +99,15 @@ void receiveMessage(LPVOID threadData) {
 		localtime_s(&date, &currentTime);
 
 		//std::cout << 1900 + date.tm_year << "-" << date.tm_mon + 1 << "-" << date.tm_mday << "@" << date.tm_hour << ":" << date.tm_min << ":" << date.tm_sec << std::endl;
-		Message message("username", ip, port, date, buffer);
+		Message message(data->user_.getUsername(), ip, port, date, buffer);
 
 		std::cout << message;
 
 		std::string messageString = message.messageToString();
 		char * emitBuffer = &messageString[0u];
 
+		messageManager->addMessage(message);
 		socketManager->broadcast(emitBuffer);
-		//send(*(SOCKET*)socket, message, 150, 0);
 	}
 }
 
@@ -140,6 +144,7 @@ int authentication(LPVOID threadData) {
 			return -1;
 		}
 		else {
+			data->user_ = user;
 			send(data->socket_, "ok", 10, 0);
 		}
 	}
@@ -153,10 +158,18 @@ int authentication(LPVOID threadData) {
 		}
 		//create new User
 		User user = User(username, password);
+		data->user_ = user;
 		userManager->addUser(user);
 		send(data->socket_, "ok", 10, 0);
 	}
-	send(data->socket_, "messages", 10, 0);
+	std::string messages = messageManager->getRecentMessages();
+	char * emitBuffer = &messages[0u];
+	status = send(data->socket_, emitBuffer, 4000, 0); //TODO fix bffer lenghth
+	if (status == SOCKET_ERROR) {
+		std::cout << "messages not sent" << std::endl;
+		int info = WSAGetLastError();
+		exit(info);
+	}
 	return 1;
 }
 
