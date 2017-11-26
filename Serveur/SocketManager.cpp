@@ -48,11 +48,11 @@ void SocketManager::init() {
 	//ip = inet_ntoa(*(struct in_addr *)*thisHost->h_addr_list);
 	
 	printf("Saisir l'adresse IP du serveur: ");
-	char host[INET6_ADDRSTRLEN];
-	gets_s(host);
+	gets_s(ip);
 
 	//check
-	if (inet_pton(AF_INET, host, &ip) <= 0) {
+	in_addr temp;
+	if (inet_pton(AF_INET, ip, &temp) <= 0) {
 		printf("Adresse IP invalide.\n");
 		system("pause");
 	}
@@ -77,7 +77,7 @@ void SocketManager::init() {
 	}
 	// Set up the sockaddr structure
 	service.sin_family = AF_INET;
-	service.sin_addr = ip;
+	service.sin_addr.s_addr = inet_addr(ip);
 	service.sin_port = htons(port);
 
 
@@ -99,12 +99,12 @@ void SocketManager::init() {
         exit(4);
 	}
 	else {
-		std::cout << "Listening on address : " << ip.s_addr << ":" << port << std::endl;
+		std::cout << "Listening on address : " << ip << ":" << port << std::endl;
 	}
 }
 
 void SocketManager::broadcast(char* message) {
-	for (size_t i = sockets.size() - 1; i >= 0; i--) {
+	for (int i = sockets.size() - 1; i >= 0; i--) {
 		int status = send(*sockets[i], message, 150, 0);
 		if (status == SOCKET_ERROR) {
 			sockets.erase(sockets.begin() + i);

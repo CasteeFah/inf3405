@@ -31,7 +31,7 @@ private:
 	WSADATA wsaData;
 	SOCKET ServerSocket;
 	hostent *thisHost;
-	in_addr ip;
+	char ip[INET_ADDRSTRLEN];
 	int port;
 	sockaddr_in service;
 	std::vector<SOCKET*> sockets;
