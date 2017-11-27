@@ -105,7 +105,7 @@ void SocketManager::init() {
 
 void SocketManager::broadcast(char* message) {
 	for (int i = sockets.size() - 1; i >= 0; i--) {
-		int status = send(*sockets[i], message, 150, 0);
+		int status = send(*sockets[i], message, 271, 0);
 		if (status == SOCKET_ERROR) {
 			sockets.erase(sockets.begin() + i);
 			std::cout << "removed socket" << std::endl;

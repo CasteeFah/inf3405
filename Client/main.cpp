@@ -10,7 +10,9 @@
 // Link avec ws2_32.lib
 #pragma comment(lib, "ws2_32.lib")
 
-const int MESSAGE_LENGTH = 500;
+const int MESSAGE_LENGTH = 201;
+const int ALL_MESSAGES_LENGTH = 4081;
+const int BROADCAST_LENGTH = 271;
 
 extern DWORD WINAPI receiveMessage(void* sd);
 DWORD WINAPI authentication();
@@ -33,13 +35,13 @@ int __cdecl main(int argc, char **argv)
 	CreateThread(0, 0, receiveMessage, 0, 0, &nThreadID);
 
 	while (true) {
-		char message[150];
+		char message[MESSAGE_LENGTH];
 		std::cout << ">";
 		gets_s(message);
 
 		//-----------------------------
 		// Envoyer le mot au serveur
-		int Result = send(*(socketHandler->getSocket()), message, 150, 0);
+		int Result = send(*(socketHandler->getSocket()), message, MESSAGE_LENGTH, 0);
 		if (Result == SOCKET_ERROR) {
 			printf("Erreur du send: %d\n", WSAGetLastError());
 			closesocket(*(socketHandler->getSocket()));
@@ -57,8 +59,8 @@ int __cdecl main(int argc, char **argv)
 DWORD WINAPI receiveMessage(void* sd) {
 	SOCKET* socket = SocketHandler::getInstance()->getSocket();
 	while (true) {
-		char buffer[MESSAGE_LENGTH];
-		int status = recv(*socket, buffer, MESSAGE_LENGTH, 0);
+		char buffer[BROADCAST_LENGTH];
+		int status = recv(*socket, buffer, BROADCAST_LENGTH, 0);
 		if (status == SOCKET_ERROR) {
 			return 0;
 		}
@@ -69,7 +71,7 @@ DWORD WINAPI receiveMessage(void* sd) {
 DWORD WINAPI authentication() {
 	SOCKET* socket = SocketHandler::getInstance()->getSocket();
 	char buffer[10];
-	char messages[4000]; //TODO redefine
+	char messages[ALL_MESSAGES_LENGTH]; //TODO redefine
 
 	int status = recv(*socket, buffer, 10, 0);
 	if (status == SOCKET_ERROR) {
@@ -103,7 +105,7 @@ DWORD WINAPI authentication() {
 		return 0;
 	}
 	//std::cout << buffer << std::endl;
-	status = recv(*socket, messages, 4000, 0);
+	status = recv(*socket, messages, ALL_MESSAGES_LENGTH, 0);
 	if (status == SOCKET_ERROR) {
 		return 0;
 	}

@@ -8,7 +8,9 @@
 #include "User.h"
 #include <ctime>
 
-const int MESSAGE_LENGTH = 500;
+const int MESSAGE_LENGTH = 201;
+const int BROADCAST_LENGTH = 271;
+const int ALL_MESSAGES_LENGTH = 4081;
 
 struct ThreadData {
     SOCKET socket_;
@@ -70,11 +72,6 @@ void receiveMessage(LPVOID threadData) {
 	int validUser = 0;
 	validUser = authentication(threadData);
 
-	//while (validUser == 0) {}
-
-	//if (validUser == -1) {
-	//	return;
-	//}
 	socketManager->add(&(data->socket_));
 
 	char adr[INET_ADDRSTRLEN];
@@ -104,7 +101,8 @@ void receiveMessage(LPVOID threadData) {
 		std::cout << message;
 
 		std::string messageString = message.messageToString();
-		char * emitBuffer = &messageString[0u];
+		char emitBuffer[BROADCAST_LENGTH];
+		strcpy_s(emitBuffer, BROADCAST_LENGTH, messageString.c_str());
 
 		messageManager->addMessage(message);
 		socketManager->broadcast(emitBuffer);
@@ -163,8 +161,9 @@ int authentication(LPVOID threadData) {
 		send(data->socket_, "ok", 10, 0);
 	}
 	std::string messages = messageManager->getRecentMessages();
-	char * emitBuffer = &messages[0u];
-	status = send(data->socket_, emitBuffer, 4000, 0); //TODO fix bffer lenghth
+	char emitBuffer[ALL_MESSAGES_LENGTH];
+	strcpy_s(emitBuffer, ALL_MESSAGES_LENGTH, messages.c_str());
+	status = send(data->socket_, emitBuffer, ALL_MESSAGES_LENGTH, 0);
 	if (status == SOCKET_ERROR) {
 		std::cout << "messages not sent" << std::endl;
 		int info = WSAGetLastError();
