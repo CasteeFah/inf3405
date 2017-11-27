@@ -39,7 +39,9 @@ int __cdecl main(int argc, char **argv)
 		std::cout << ">";
 		std::cin.getline(message, MESSAGE_LENGTH);
 		std::cin.clear();
-		std::cin.ignore();
+		//while (cin) {
+			//std::cin.ignore();
+		//}
 		//-----------------------------
 		// Envoyer le mot au serveur
 		int Result = send(*(socketHandler->getSocket()), message, MESSAGE_LENGTH, 0);

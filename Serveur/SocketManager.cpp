@@ -28,38 +28,21 @@ void SocketManager::init() {
 	}
 	char* option = "1";
 	setsockopt(ServerSocket, SOL_SOCKET, SO_REUSEADDR, option, sizeof(option));
-	/*
-	char host[INET_ADDRSTRLEN];
-	cout << "Entrez l'adresse IP du serveur" << endl;
-	gets_s(host);
-
-	sockaddr_in thisAddr;
-	thisAddr.sin_addr
-
-	getnameinfo(host, )
-
-	inet_ntop(AF_INET, (struct in_addr*)*thisHost->h_addr_list, ip, INET_ADDRSTRLEN);
-	service.sin_family = AF_INET;
-	inet_pton(AF_INET, ip, &service.sin_addr.s_addr);
-	service.sin_port = htons(port);
-	*/
-	// Get the local host information
-	//thisHost = gethostbyname("");
-	//ip = inet_ntoa(*(struct in_addr *)*thisHost->h_addr_list);
 	
 	printf("Saisir l'adresse IP du serveur: ");
-	gets_s(ip);
+	std::cin.getline(ip, INET_ADDRSTRLEN);
 
 	//check
 	in_addr temp;
 	if (inet_pton(AF_INET, ip, &temp) <= 0) {
 		printf("Adresse IP invalide.\n");
 		system("pause");
+		exit(5);
 	}
 
-	char port_string[10];
+	char port_string[6];
 	printf("Saisir le port du serveur: ");
-	gets_s(port_string);
+	std::cin.getline(port_string, 6);
 	int n = 0;
 	while (port_string[n] != NULL) {
 		if (isalpha(port_string[n])) {

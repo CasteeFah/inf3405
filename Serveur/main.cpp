@@ -88,14 +88,11 @@ void receiveMessage(LPVOID threadData) {
 			std::cout << "disconected" << std::endl;
 			return;
 		}
-		std::cout << buffer << std::endl;
-
 		time_t currentTime;
 		time(&currentTime);
 		tm date;
 		localtime_s(&date, &currentTime);
 
-		//std::cout << 1900 + date.tm_year << "-" << date.tm_mon + 1 << "-" << date.tm_mday << "@" << date.tm_hour << ":" << date.tm_min << ":" << date.tm_sec << std::endl;
 		Message message(data->user_.getUsername(), ip, port, date, buffer);
 
 		std::cout << message;
