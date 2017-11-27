@@ -17,13 +17,6 @@ const int BROADCAST_LENGTH = 271;
 extern DWORD WINAPI receiveMessage(void* sd);
 DWORD WINAPI authentication();
 
-//extern function : send message
-//					receive messages
-//					user + 
-//					pw >> new pw / current pw /new user/old user/ 
-//					validation msg
-
-
 int __cdecl main(int argc, char **argv)
 {
 	Ptr_SocketHandler socketHandler = SocketHandler::getInstance();
@@ -39,11 +32,8 @@ int __cdecl main(int argc, char **argv)
 		std::cout << ">";
 		std::cin.getline(message, MESSAGE_LENGTH);
 		std::cin.clear();
-		//while (cin) {
-			//std::cin.ignore();
-		//}
-		//-----------------------------
-		// Envoyer le mot au serveur
+		
+		// Envoyer le message au serveur
 		int Result = send(*(socketHandler->getSocket()), message, MESSAGE_LENGTH, 0);
 		if (Result == SOCKET_ERROR) {
 			printf("Erreur du send: %d\n", WSAGetLastError());
@@ -74,7 +64,7 @@ DWORD WINAPI receiveMessage(void* sd) {
 DWORD WINAPI authentication() {
 	SOCKET* socket = SocketHandler::getInstance()->getSocket();
 	char buffer[10];
-	char messages[ALL_MESSAGES_LENGTH]; //TODO redefine
+	char messages[ALL_MESSAGES_LENGTH];
 
 	int status = recv(*socket, buffer, 10, 0);
 	if (status == SOCKET_ERROR) {
@@ -108,7 +98,6 @@ DWORD WINAPI authentication() {
 		system("pause");
 		return 0;
 	}
-	//std::cout << buffer << std::endl;
 	status = recv(*socket, messages, ALL_MESSAGES_LENGTH, 0);
 	if (status == SOCKET_ERROR) {
 		return 0;

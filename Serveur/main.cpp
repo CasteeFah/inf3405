@@ -26,11 +26,6 @@ struct ThreadData {
 extern DWORD WINAPI socketHandler(LPVOID threadData);
 int authentication(LPVOID threadData);
 
-// extern function :	look for username
-//						create user
-//						check pass
-//						emit last 15 messages
-//						emit new message
 
 int main() {
 	Ptr_SocketManager socketManager = SocketManager::getInstance();
