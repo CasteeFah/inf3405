@@ -58,17 +58,18 @@ void SocketHandler::connectToServer() {
 	//----------------------------
 	// Demander à l'usager l'adresse du serveur auquel il veut envoyer le message
 	printf("Saisir l'adresse IP du serveur: ");
-	gets_s(host);
+	std::cin.getline(host, 16);
 
 	//check
 	in_addr temp;
 	if (inet_pton(AF_INET, host, &temp) <= 0) {
 		printf("Adresse IP invalide.\n");
 		system("pause");
+		exit(5);
 	}
 
 	printf("Saisir le port du serveur: ");
-	gets_s(port);
+	std::cin.getline(port, 6);
 	int n = 0;
 	while (port[n] != NULL) {
 		if (isalpha(port[n])) {

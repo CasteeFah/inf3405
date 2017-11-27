@@ -37,8 +37,9 @@ int __cdecl main(int argc, char **argv)
 	while (true) {
 		char message[MESSAGE_LENGTH];
 		std::cout << ">";
-		gets_s(message);
-
+		std::cin.getline(message, MESSAGE_LENGTH);
+		std::cin.clear();
+		std::cin.ignore();
 		//-----------------------------
 		// Envoyer le mot au serveur
 		int Result = send(*(socketHandler->getSocket()), message, MESSAGE_LENGTH, 0);
@@ -77,11 +78,11 @@ DWORD WINAPI authentication() {
 	if (status == SOCKET_ERROR) {
 		return 0;
 	}
-	std::cout << buffer;
 	char username[20];
 	char password[20];
 	std::cout << std::endl << "Veuillez entrer votre nom d'utilisateur(longueur max: 20 caractères): ";
-	gets_s(username);
+	std::cin.getline(username, 20);
+	std::cin.clear();
 	send(*socket, username, 20, 0);
 	status = recv(*socket, buffer, 10, 0);
 	if (status == SOCKET_ERROR) {
@@ -93,7 +94,8 @@ DWORD WINAPI authentication() {
 	else {
 		std::cout << std::endl << "Entrez un mot de passe pour votre nouveau compte((longueur max: 20 caractères): ";
 	}
-	gets_s(password);
+	std::cin.getline(password, 20);
+	std::cin.clear();
 	send(*socket, password, 20, 0);
 	status = recv(*socket, buffer, 10, 0);
 	if (status == SOCKET_ERROR) {
